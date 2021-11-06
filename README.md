@@ -2,5 +2,8 @@ Sigle calculator with OSx apparence.
 
 starting:
 
-```$ npm install```
-```$ npm start```
+```
+$ npm install
+
+$ npm start
+```
