@@ -1,6 +1,6 @@
-## Calculadora com ReactJS
+Sigle calculator with OSx apparence. 
 
-Comandos para iniciar:
+starting:
 
-### `npm install`
-### `npm start`
+```$ npm install```
+```$ npm start```
