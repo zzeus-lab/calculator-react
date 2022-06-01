@@ -11,14 +11,7 @@ A simple calculator with ReactJS.
 <a href="https://zeucampos.github.io/calculator-react" target="_blank">Check here!</a>
 
 ## 🚀 127.0.0.1
-
-#### yarn:
-```
-yarn && yarn start
-```
-
-#### npm:
-> To start using npm you should to delete `yarn.lock` file and run npm install. Then all done!:
+> Use npm to start the project:
 ```
 npm install && npm run start
 ```
