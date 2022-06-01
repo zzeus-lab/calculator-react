@@ -1,9 +1,11 @@
 import React from "react";
 import "./styled.css";
 
-export default (props) => (
-  <div className="display">
-    <span>{props.operator}</span>
-    <span className="number">{props.value}</span>
-  </div>
-);
+export default function Display({ operator, value }) {
+  return (
+    <div className="display">
+      <span>{operator}</span>
+      <span className="number">{value}</span>
+    </div>
+  );
+}

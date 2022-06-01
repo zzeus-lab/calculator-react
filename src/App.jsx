@@ -1,121 +1,124 @@
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 
 import Logo from "./assets/img/logo.png";
 
 import Button from "./components/Button/index";
 import Display from "./components/Display/index";
 
-const initState = {
-  displayValue: 0,
-  clearDisplay: false,
-  operation: null,
-  values: [0, 0],
-  current: 0,
-};
+export default function App() {
+  const [operation, setOperation] = React.useState(null);
+  const [current, setCurrent] = React.useState(0);
+  const [shouldClearDisplay, setShouldClearDisplay] = React.useState(false);
+  const [values, setValues] = React.useState([0, 0]);
+  const [displayValue, setDisplayValue] = React.useState(0);
 
-export default class App extends Component {
-  constructor(props) {
-    super(props);
+  const calc = (num1, num2, operator) => {
+    switch (operator) {
+      case "+":
+        return num1 + num2;
+      case "-":
+        return num1 - num2;
+      case "*":
+        return num1 * num2;
+      case "/":
+        return num1 / num2;
+      default:
+        return 0;
+    }
+  };
 
-    this.clearData = this.clearData.bind(this);
-    this.setOperation = this.setOperation.bind(this);
-    this.addDigit = this.addDigit.bind(this);
-    window.document.title = "ReCalculator";
-  }
-
-  state = { ...initState };
-
-  clearData() {
-    this.setState({ ...initState });
-  }
-
-  setOperation(operation) {
-    if (this.state.current === 0) {
-      this.setState({ operation, current: 1, clearDisplay: true });
+  const setOperator = (operator) => {
+    if (current === 0) {
+      setCurrent(1);
+      setOperation(operator);
+      setShouldClearDisplay(true);
     } else {
-      const equals = operation === "=";
-      const currentOperation = this.state.operation;
-      const values = [...this.state.values];
+      const equals = operator === "=";
+      const currentOperation = operation;
+
+      const numbers = values;
 
       try {
-        values[0] = eval(`${values[0]} ${currentOperation} ${values[1]}`);
+        numbers[0] = calc(numbers[0], numbers[1], currentOperation);
       } catch (e) {
-        values[0] = this.state.values[0];
+        numbers[0] = values[0];
       }
 
-      values[1] = 0;
+      numbers[1] = 0;
 
-      this.setState({
-        displayValue: values[0],
-        operation: equals ? null : operation,
-        current: equals ? 0 : 1,
-        clearDisplay: !equals,
-        values,
-      });
+      setDisplayValue(numbers[0]);
+      setOperation(equals ? null : operator);
+      setCurrent(equals ? 0 : 1);
+      setShouldClearDisplay(!equals);
+      setValues(numbers);
     }
-  }
+  };
 
-  addDigit(n) {
-    if (n === "." && this.state.displayValue.includes(".")) {
+  const addDigit = (n) => {
+    if (n === "." && displayValue.includes(".")) {
       return;
     }
-    const clearDisplay =
-      this.state.displayValue == 0 || this.state.clearDisplay;
+    const clearDisplay = displayValue === 0 || shouldClearDisplay;
 
-    const currentValue = clearDisplay ? "" : this.state.displayValue;
-    const displayValue = currentValue + n;
+    const currentValue = clearDisplay ? "" : displayValue;
+    const nextDisplayValue = currentValue + n;
 
-    this.setState({
-      displayValue,
-      clearDisplay: displayValue > 0 ? false : clearDisplay,
-    });
+    setDisplayValue(nextDisplayValue);
+    setShouldClearDisplay(nextDisplayValue === "0");
 
     if (n !== ".") {
-      const i = this.state.current;
-      const newValue = parseFloat(displayValue);
-      const values = [...this.state.values];
-      values[i] = newValue;
-      this.setState({ values });
+      const i = current;
+      const formated = parseFloat(nextDisplayValue);
+      const bindValues = values;
+      bindValues[i] = formated;
+      setValues(bindValues);
     }
-  }
+  };
 
-  render() {
-    return (
-      <div className="content-container">
-        <div className="logo-container">
-          <img src={Logo} width={32} height={32} />
-          <h2 className="logoname">ReCalculator</h2>
-        </div>
+  const clearData = () => {
+    setDisplayValue(0);
+    setOperation(null);
+    setCurrent(0);
+    setShouldClearDisplay(true);
+    setValues([0, 0]);
+  };
 
-        <Display
-          operator={this.state.operation}
-          value={this.state.displayValue}
-        />
+  useEffect(() => {
+    window.document.title = "ReCalculator";
+  }, []);
 
-        <div className="calculator">
-          <Button label="AC" click={this.clearData} triple />
-          <Button label="/" click={this.setOperation} operation />
-          <Button label="7" click={this.addDigit} />
-          <Button label="8" click={this.addDigit} />
-          <Button label="9" click={this.addDigit} />
-          <Button label="*" click={this.setOperation} operation />
-          <Button label="4" click={this.addDigit} />
-          <Button label="5" click={this.addDigit} />
-          <Button label="6" click={this.addDigit} />
-          <Button label="-" click={this.setOperation} operation />
-          <Button label="1" click={this.addDigit} />
-          <Button label="2" click={this.addDigit} />
-          <Button label="3" click={this.addDigit} />
-          <Button label="+" click={this.setOperation} operation />
-          <Button label="0" click={this.addDigit} />
-          <Button label="." click={this.addDigit} />
-          <Button label="=" click={this.setOperation} double />
-        </div>
-        <p className="copy">
-          © ReCalculator {new Date().getFullYear()}, by Eliseu Campos - All
-          rights reserved.
-        </p>
+  return (
+    <div className="content-container">
+      <div className="logo-container">
+        <img src={Logo} width={32} height={32} alt="ReCalculator" />
+        <h2 className="logoname">ReCalculator</h2>
       </div>
-    );
-  }
+
+      <Display operator={operation} value={displayValue} />
+
+      <div className="calculator">
+        <Button label="AC" click={clearData} triple />
+        <Button label="/" click={setOperator} operation />
+        <Button label="7" click={addDigit} />
+        <Button label="8" click={addDigit} />
+        <Button label="9" click={addDigit} />
+        <Button label="*" click={setOperator} operation />
+        <Button label="4" click={addDigit} />
+        <Button label="5" click={addDigit} />
+        <Button label="6" click={addDigit} />
+        <Button label="-" click={setOperator} operation />
+        <Button label="1" click={addDigit} />
+        <Button label="2" click={addDigit} />
+        <Button label="3" click={addDigit} />
+        <Button label="+" click={setOperator} operation />
+        <Button label="0" click={addDigit} />
+        <Button label="." click={addDigit} />
+        <Button label="=" click={setOperator} double />
+      </div>
+
+      <p className="copy">
+        {`© ReCalculator ${new Date().getFullYear()}, by Eliseu Campos - All rights reserved.`}
+      </p>
+    </div>
+  );
 }

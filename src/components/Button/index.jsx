@@ -1,18 +1,20 @@
 import React from "react";
+
 import "./styled.css";
 
-export default (props) => {
+export default function Button({ operation, label, click, double, triple }) {
   let classes = "btn ";
-  classes += props.operation ? "operation " : "";
-  classes += props.double ? "double " : "";
-  classes += props.triple ? "triple " : "";
+  classes += operation ? "operation " : "";
+  classes += double ? "double " : "";
+  classes += triple ? "triple " : "";
 
   return (
     <button
-      onClick={(e) => props.click && props.click(props.label)}
+      type="button"
+      onClick={() => click && click(label)}
       className={classes}
     >
-      {props.label}
+      {label}
     </button>
   );
-};
+}
