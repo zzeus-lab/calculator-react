@@ -8,7 +8,7 @@ A simple calculator with ReactJS.
 
 > _This project will continue to evolve and receive new features. You can check next features below._
 - [x] Migrate to function components
-- [ ] Keyboard inputs
+- [ ] Accept keyboard inputs
 - [ ] Format displayed number
 
 ## 🚀 127.0.0.1
